@@ -1,0 +1,16 @@
+<div class="body">
+    <div id="title">Meteor Shower Tracker</div>
+    <div id="date-container">
+        <label for="start">Start Date</label>
+        <input type="date" id="start" #startdate>
+
+        <label for="end">End Date</label>
+        <input type="date" id="end" #enddate>
+
+        <button (click)="search()">Click Me</button>
+    </div>
+    <div id='stars'></div>
+    <div class="flex">
+        <div id="content" #main></div>
+    </div>
+</div>
