@@ -9,8 +9,13 @@ import { HomeService } from './home.service';
 export class HomeComponent implements OnInit {
   data: {} = null;
   flattenedData = [];
+  startDate: Date;
+  endDate: Date;
+  link = '../Assets/meteor.png';
 
   @ViewChild('main') mainRef: ElementRef;
+  @ViewChild('startdate') startRef: ElementRef;
+  @ViewChild('enddate') endRef: ElementRef;
 
   constructor(private homeService: HomeService) { }
 
@@ -18,10 +23,25 @@ export class HomeComponent implements OnInit {
   }
 
   displayCards() {
-    this.mainRef.nativeElement.innerHTML = this.flattenedData.map(val => 
-      `<div style="width:250px; height: 300px; margin: 1em; background-color: gray; opacity: 100; z-index: 150; color: white">
-      <img style="width:100%; height: auto" src=${val.nasa_jpl_url}>
-      ${val.name}</div>`).join('');
+    this.mainRef.nativeElement.innerHTML = this.flattenedData.map(val => {
+      const size = Math.round(parseInt(val.estimated_diameter.feet.estimated_diameter_max));
+      const date = val.close_approach_data[0].close_approach_date_full;
+      const miss =  Math.round(parseInt(val.close_approach_data[0].miss_distance.miles));
+      const speed = Math.round(parseInt(val.close_approach_data[0].relative_velocity.miles_per_hour));
+      const hazard = val.is_potentially_hazardous_asteroid;
+  
+      return(
+      `<div style="display: flex; flex-direction: column; align-items: center; width:250px; min-height: 300px; margin: 1em; background-color: #f1f1f1; opacity: 100; z-index: 150; font-family: arial">
+      <img style="margin-top: 1em; margin-botton: 1em; width: 125px; height: 125px" src="../../assets/meteor.png">
+      <div style="display: flex; flex-direction: column";>
+      <div style="margin-top: 1.25em;">Name: <span style="color: #ff7d00">${val.name}</span></div>
+      <div style="margin-top: .25em">Diameter: <span style="color: #ff7d00">~${size}ft</span></div>
+      <div style="margin-top: .25em">Time: <span style="color: #ff7d00">${date}</span></div>
+      <div style="margin-top: .25em">Miss Distance: <span style="color: #ff7d00">~${miss} miles </span></div>
+      <div style="margin-top: .25em">Speed:<span style="color: #ff7d00"> ~${speed}mph</span></div>
+      <div style="margin-top: .25em" margin-bottom: 1em;>Is Hazardous: <span style="color: ${hazard ? 'red' : 'green'}">${hazard}</span></div>
+      </div>
+      </div>`)}).join('');
   }
 
   formatData(data: any) {
@@ -32,9 +52,13 @@ export class HomeComponent implements OnInit {
     this.displayCards()
   }
 
-  search(value: string) {
-    //this.mainRef.nativeElement.innerHTML = "Hello Angular 10!";
-    this.homeService.getSearch().subscribe(data => {
+  search() {
+    this.flattenedData = [];
+    this.startDate = this.startRef.nativeElement.value;
+    this.endDate = this.endRef.nativeElement.value;
+
+    console.log(this.startDate);
+    this.homeService.getSearch(this.startDate, this.endDate).subscribe(data => {
       this.data = data;
       this.formatData(this.data);
     })
