@@ -57,6 +57,14 @@ button {
   min-height: 5em;
 }
 
+#loading {
+  position: relative;
+  top: 3.2em;
+  text-align: center;
+  font-size: 1.5em;
+  color: white;
+}
+
 #date-container {
   display: flex;
   justify-content: center;

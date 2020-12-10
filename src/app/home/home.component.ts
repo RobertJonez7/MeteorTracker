@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('main') mainRef: ElementRef;
   @ViewChild('startdate') startRef: ElementRef;
   @ViewChild('enddate') endRef: ElementRef;
+  @ViewChild('loading') loadRef: ElementRef;
 
   constructor(private homeService: HomeService) { }
 
@@ -23,6 +24,7 @@ export class HomeComponent implements OnInit {
   }
 
   displayCards() {
+    this.loadRef.nativeElement.innerHTML = '';
     this.mainRef.nativeElement.innerHTML = this.flattenedData.map(val => {
       const size = Math.round(parseInt(val.estimated_diameter.feet.estimated_diameter_max));
       const date = val.close_approach_data[0].close_approach_date_full;
@@ -53,11 +55,14 @@ export class HomeComponent implements OnInit {
   }
 
   search() {
+    /* Clear previous search history */
+    this.mainRef.nativeElement.innerHTML = '';
+    this.loadRef.nativeElement.innerHTML = 'Loading...';
     this.flattenedData = [];
+
     this.startDate = this.startRef.nativeElement.value;
     this.endDate = this.endRef.nativeElement.value;
 
-    console.log(this.startDate);
     this.homeService.getSearch(this.startDate, this.endDate).subscribe(data => {
       this.data = data;
       this.formatData(this.data);
