@@ -12,4 +12,8 @@ export class HomeService {
   getSearch(start: Date, end: Date) {
     return this.httpClient.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${start}&end_date=${end}&api_key=${this.API_KEY}`);
   }
+
+  postData(i: string) {
+    this.httpClient.post('http://localhost:3000/starpost', i);
+  }
 }

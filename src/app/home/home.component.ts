@@ -1,5 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { HomeService } from './home.service';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +19,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('enddate') endRef: ElementRef;
   @ViewChild('loading') loadRef: ElementRef;
 
-  constructor(private homeService: HomeService) { }
+  constructor(private homeService: HomeService, private http: HttpClient) { }
 
   ngOnInit(): void {
   }
@@ -35,13 +36,16 @@ export class HomeComponent implements OnInit {
       return(
       `<div style="display: flex; flex-direction: column; align-items: center; width:250px; min-height: 300px; margin: 1em; background-color: #f1f1f1; opacity: 100; z-index: 150; font-family: arial">
       <img style="margin-top: 1em; margin-botton: 1em; width: 125px; height: 125px" src="../../assets/meteor.png">
-      <div style="display: flex; flex-direction: column";>
+      <div style="display: flex; flex-direction: column">
       <div style="margin-top: 1.25em;">Name: <span style="color: #ff7d00">${val.name}</span></div>
       <div style="margin-top: .25em">Diameter: <span style="color: #ff7d00">~${size}ft</span></div>
       <div style="margin-top: .25em">Time: <span style="color: #ff7d00">${date}</span></div>
       <div style="margin-top: .25em">Miss Distance: <span style="color: #ff7d00">~${miss} miles </span></div>
       <div style="margin-top: .25em">Speed:<span style="color: #ff7d00"> ~${speed}mph</span></div>
-      <div style="margin-top: .25em" margin-bottom: 1em;>Is Hazardous: <span style="color: ${hazard ? 'red' : 'green'}">${hazard}</span></div>
+      <div style="margin-top: .25em margin-bottom: 1em;">Is Hazardous: <span style="color: ${hazard ? 'red' : 'green'}">${hazard}</span></div>
+      <div style="display: flex; justify-content: center">
+        <button style="width: 30%; height: 2em; margin-top: 1em; margin-bottom: 1em; color: white; background-color: rgb(72, 136, 173); cursor: pointer; border: none">Save</button>
+      </div>
       </div>
       </div>`)}).join('');
   }
@@ -55,7 +59,6 @@ export class HomeComponent implements OnInit {
   }
 
   search() {
-    /* Clear previous search history */
     this.mainRef.nativeElement.innerHTML = '';
     this.loadRef.nativeElement.innerHTML = 'Loading...';
     this.flattenedData = [];
@@ -67,6 +70,10 @@ export class HomeComponent implements OnInit {
       this.data = data;
       this.formatData(this.data);
     })
+  }
+
+  postData() {
+    this.http.post('http://localhost:3000/starpost', "Hello");
   }
 
 }
