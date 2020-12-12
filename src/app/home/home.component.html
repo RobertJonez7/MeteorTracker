@@ -12,6 +12,8 @@
     <div id="loading" #loading></div>
     <div id='stars'></div>
     <div class="flex">
-        <div id="content" #main></div>
+        <div id="content" *ngIf="flattenedData" #main>
+            <app-stars *ngFor="let i of flattenedData" [data]="i"></app-stars>
+        </div>
     </div>
 </div>

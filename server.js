@@ -6,11 +6,29 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var router = express.Router();
 var app = express();
-//var mongoose = require('mongoose');
+var mongoose = require('mongoose');
 
 const port = 3000;
 
 var index = require('./server/routes/app');
+var starsRoute = require('./server/routes/stars');
+
+mongoose.connect('mongodb://localhost:3000/app',
+  { useNewUrlParser: true }, (err, res) => {
+    if (err) {
+      console.log('Connection failed');
+    }
+    else {
+      console.log('Connected to database!');
+    }
+  }
+);
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+app.use(logger('dev'));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -28,6 +46,7 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'dist/stars')));
 
 app.use('/', index);
+app.use('/stars', starsRoute)
 
 app.use(function(req, res, next) {
   res.render("index");
